@@ -1,5 +1,5 @@
-streamlit
-pandas
-numpy
-pillow==10.0.1
-altair
+streamlit==1.31.1
+pandas==2.1.4
+numpy==1.24.3
+Pillow==9.5.0
+altair==5.1.2
