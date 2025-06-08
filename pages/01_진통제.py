@@ -51,6 +51,22 @@ st.markdown("""
         margin: 0 0 1rem 0;
         padding: 0;
     }
+
+    /* 완료 메시지 스타일 */
+    .completion-message {
+        text-align: center;
+        padding: 50px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        margin: 50px auto;
+        max-width: 600px;
+    }
+
+    .completion-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        color: #28a745;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -61,47 +77,62 @@ st.markdown("<div style='height: 1rem'></div>", unsafe_allow_html=True)
 if 'back_button' not in st.session_state:
     st.session_state.back_button = False
 
+if 'request_submitted' not in st.session_state:
+    st.session_state.request_submitted = False
+
 col1, col2, col3 = st.columns([2, 8, 2])
 with col1:
     if st.button("← 돌아가기"):
+        st.session_state.request_submitted = False
         st.switch_page('app.py')
 
-st.title("💊진통제 요청")
+if not st.session_state.request_submitted:
+    st.title("💊 진통제 요청")
 
-# 폼 생성
-with st.form("pain_medication_form"):
-    st.write("### 진통제 요청 정보를 입력해주세요")
-    
-    # 통증 부위
-    pain_location = st.text_input("통증 부위를 입력해주세요", value="", 
-                                placeholder="예: 머리, 허리, 다리 등")
-    
-    # 통증 강도
-    pain_level = st.slider("통증 강도를 선택해주세요", 
-                          min_value=1, 
-                          max_value=10, 
-                          value=1,
-                          help="1(약한 통증) ~ 10(매우 심한 통증)")
-    
-    # 통증 느낌
-    pain_feeling = st.selectbox("통증 느낌을 선택해주세요", 
-                              options=["선택해주세요", "찌르듯이", "날카롭게", "둔하게", "타는듯이", "저린듯이", "누르는듯이", "타는듯한", "기타"],
-                              index=0,
-                              placeholder="통증 느낌을 선택해주세요")
-    
-    # 통증 시작 시간
-    pain_start = st.time_input("통증이 언제 시작되었는지 선택해주세요")
-    
-    
-    # 추가 설명
-    additional_info = st.text_area("추가로 전달할 내용이 있다면 입력해주세요",
-                                 value="",  # 빈 값으로 설정
-                                 placeholder="예: 진통제 복용 이력, 알레르기 정보 등",
-                                 help="예: 기존 복용 중인 약, 알레르기 정보 등")
-    
-    # 제출 버튼
-    submitted = st.form_submit_button("요청하기")
-    
-    if submitted:
-        st.success("진통제 요청이 전달되었습니다. 곧 간호사가 확인할 예정입니다.")
-        # TODO: 여기에 실제 데이터 처리 로직 추가 
+    # 폼 생성
+    with st.form("pain_medication_form"):
+        st.write("### 진통제 요청 정보를 입력해주세요")
+        
+        # 통증 부위
+        pain_location = st.text_input("통증 부위를 입력해주세요", value="", 
+                                    placeholder="예: 머리, 허리, 다리 등")
+        
+        # 통증 강도
+        pain_level = st.slider("통증 강도를 선택해주세요", 
+                            min_value=1, 
+                            max_value=10, 
+                            value=1,
+                            help="1(약한 통증) ~ 10(매우 심한 통증)")
+        
+        # 통증 느낌
+        pain_feeling = st.selectbox("통증 느낌을 선택해주세요", 
+                                options=["선택해주세요", "찌르듯이", "날카롭게", "둔하게", "타는듯이", "저린듯이", "누르는듯이", "타는듯한", "기타"],
+                                index=0,
+                                placeholder="통증 느낌을 선택해주세요")
+        
+        # 통증 시작 시간
+        pain_start = st.text_input("통증이 언제부터 시작되었는지 입력해주세요",
+                                placeholder="예: 2시간 전, 오늘 아침 8시, 어제 저녁부터")
+        
+        # 추가 설명
+        additional_info = st.text_area("추가로 전달할 내용이 있다면 입력해주세요",
+                                    value="",
+                                    placeholder="예: 진통제 복용 이력, 알레르기 정보 등",
+                                    help="예: 기존 복용 중인 약, 알레르기 정보 등")
+        
+        # 제출 버튼
+        submitted = st.form_submit_button("요청하기", use_container_width=True)
+        
+        if submitted:
+            st.session_state.request_submitted = True
+            st.rerun()
+
+else:
+    # 완료 메시지 표시
+    st.markdown("""
+        <div class="completion-message">
+            <div class="completion-icon">✅</div>
+            <h2>진통제 요청이 전달되었습니다</h2>
+            <p>곧 간호사가 확인할 예정입니다</p>
+        </div>
+    """, unsafe_allow_html=True) 
