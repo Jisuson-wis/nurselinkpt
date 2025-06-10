@@ -42,7 +42,7 @@ if st.button("← 돌아가기"):
 st.markdown("""
     <div class="completion-message">
         <div class="completion-icon">✅</div>
-        <h2>가습기 치료 요청이 전달되었습니다</h2>
+        <h2>가습기 치료 요청이<br>전달되었습니다</h2>
         <p>곧 간호사가 확인할 예정입니다</p>
     </div>
 """, unsafe_allow_html=True) 
